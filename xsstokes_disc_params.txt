@@ -1,15 +1,5 @@
-Table of contents
-=================
-
-* [Model description](#model-description)
-* [References](#references)
-* [Model parameters](#model-parameters)
-* [Required files](#required-files)
-* [Installation and usage in XSPEC](#installation-and-usage-in-xspec)
-
-
 Model description
-=================
+-----------------
 
 This model computes the emission and its polarisation properties from
 an X-ray source of power-law emission of arbitrary incident polarisation 
@@ -36,38 +26,37 @@ No relativistic effects inside the system are taken into account.
 All components are static.
 
 For any issues regarding the use of xsstokes_disc, please, contact J. Podgorný at 
-[jakub.podgorny@asu.cas.cz](mailto:jakub.podgorny@asu.cas.cz) or M. Dovčiak
-[michal.dovciak@asu.cas.cz](mailto:michal.dovciak@asu.cas.cz).
+jakub.podgorny@asu.cas.cz or M. Dovčiak at michal.dovciak@asu.cas.cz.
 
 
 References
-==========
+----------
 
-Podgorný J, Dovčiak M, Marin F (2023)  
-_Simple numerical X-ray polarization models of reflecting axially symmetric structures around accreting compact objects_  
-[MNRAS, submitted]()
-[[arXiv:]()]
+Podgorný J, Dovčiak M, Marin F (in prep.)  
+Simple numerical X-ray polarization models of reflecting axially symmetric structures around accreting compact objects
+MNRAS, submitted ()
+arXiv: ()
 
 Podgorný J, Dovčiak M, Marin F, Goosmann RW and Różańska A (2022)
 Spectral and polarization properties of reflected X-ray emission from black hole accretion discs
-[MNRAS, 510, pp.4723-4735](https://doi.org/10.1093/mnras/stab3714)
-[[arXiv:2201.07494](https://arxiv.org/abs/2201.07494)]
+MNRAS, 510, pp.4723-4735 (https://doi.org/10.1093/mnras/stab3714)
+arXiv:2201.07494 (https://arxiv.org/abs/2201.07494)
 
 Model parameters
-================
+----------------
 
-* **par1 ... PhoIndex** 
+* par1 ... PhoIndex 
   - photon index of the primary power-law X-ray flux
-* **par2 ... cos_incl** 
+* par2 ... cos_incl 
   - cosine of the observer inclination (1.-pole, 0.-disc)
-* **par3 ... poldeg**  
+* par3 ... poldeg
   - intrinsic polarisation degree of primary radiation between 0. and 1.
-* **par4 ... chi**  
+* par4 ... chi
   - intrinsic polarisation angle (in degrees, -90 < chi < 90) of primary radiation
   - the orientation is degenarate by 180 degrees
-* **par5 ... zshift**
+* par5 ... zshift
   - overall Doppler shift
-* **par6 ... Stokes**
+* par6 ... Stokes
   - defines the output of the model:
     - -1: the output is defined according to the XFLT0001 keyword of the 
           SPECTRUM extension of the data file, where "Stokes:0" means photon 
@@ -89,60 +78,59 @@ Model parameters
     - 10: array of Stokes parameter V devided by I
 
 Required files
-==============
+--------------
 
-* **Source code files**
+* Source code files
   - xsstokes_disc.c
   - lmodel-stokesni.dat  
-* **reprocessing tables**
-  (for reprocessing of photons in distant discs, more details in Podgorný J. et al. (in prep.))
-  - [23576508.zip](https://doi.org/10.6084/m9.figshare.23576508)  
+* tables for reprocessing of photons in distant opaque toroidal structure, more details in Podgorný J. et al. (in prep.)
+  - 23576508.zip (https://doi.org/10.6084/m9.figshare.23576508)
 
 
 Installation and usage in XSPEC
-===============================
+-------------------------------
 
-1. **Download the source code files**
+1. Download the source code files
    into a directory where you want to install the model, e.g. '/path/to/xsstokes_disc-master/'
 
-2. **Download the FITS files** 
-   [23576508.zip](https://doi.org/10.6084/m9.figshare.23576508) 
+2. Download the FITS files 
+   23576508.zip (https://doi.org/10.6084/m9.figshare.23576508) 
    with the tables into the directory with xsstokes_disc, i.e. '/path/to/xsstokes_disc-master'.
 
-3. **Unzip the reflection tables** with polarisation information, e.g. by the command:
+3. Unzip the reflection tables with polarisation information, e.g. by the command:
 
-   `unzip 23576508.zip`
+   unzip 23576508.zip
    
-4. **Compile the code** inside XSPEC (needed to be done only once):
+4. Compile the code inside XSPEC (needed to be done only once):
 
    The code is compiled inside XSPEC with the following command (assuming all 
    the source files and FITS tables are in the directory 
    '/path/to/xsstokes_disc-master'):
 
-   `initpackage stokesni lmodel-stokesni.dat /path/to/xsstokes_disc-master`
+   initpackage stokesni lmodel-stokesni.dat /path/to/xsstokes_disc-master
 
-   **Note**:
+   Note:
    Your XSPEC installation must have been originally installed from the source 
    code distribution. Local models, like xsstokes_disc, cannot be used if the XSPEC 
    was originally installed from the pre-compiled binary distribution.
 
-5. **Load the xsstokes_disc model** into XSPEC:
+5. Load the xsstokes_disc model into XSPEC:
 
    To use the xsstokes_disc model inside XSPEC, first the model package needs to be 
    loaded and directory containing the xsstokes_disc set:
 
-   `lmod stokesni /path/to/xsstokes_disc-master`  
+   lmod stokesni /path/to/xsstokes_disc-master
 
-6. Then the **xsstokes_disc model may be used** in the usual way, e.g.:
+6. Then the xsstokes_disc model may be used in the usual way, e.g.:
 
-   `mo stokes`
+   mo stokes
 
-   **Note**:
+   Note:
    In case of segmentation fault, one may need to increase the stack size before 
    launching XSPEC, e.g. with the command:
 
-   `ulimit -s unlimited`
+   ulimit -s unlimited
 
    or 
 
-   `ulimit -s 65532`
+   ulimit -s 65532
