@@ -2,25 +2,31 @@
  *	    isotropically by an (un)polarised power law,
  *        - an example of a polarisation subroutine for XSPEC using disc reflection 
  *	    tables computed with STOKES code (Podgorny et al. 2022), integrated between
- *	    0 <= cos_incl_incident <= 0.3 only to represent distant disc reflection
+ *	    0 <= cos_incl_incident <= M only to represent distant disc reflection
  * 
+ * -----------------------------------------------------------------------------
+ *
+ * !! CAUTION, THE MODEL IS STILL IN A TESTING MODE !!
+ *
  * -----------------------------------------------------------------------------
  *
  * This subroutine computes the emission from a neutral slab that is illuminated 
  * under high inclination angles by a primary power-law
  *
- * par1 ... PhoIndex - power-law photon index of the primary flux
- * par2 ... cos_incl - cosine of the observer inclination (1.-pole, 0.-disc)
- * par3 ... pol_deg  - intrinsic polarisation degree of primary radiation
- * par4 ... chi - intrinsic polarisation angle (in degrees, -90 < chi < 90)
+ * par1 ... Size - the upper limit M in cos_incl_incident integration,
+ *			representing the corona size
+ * par2 ... PhoIndex - power-law photon index of the primary flux
+ * par3 ... cos_incl - cosine of the observer inclination (1.-pole, 0.-disc)
+ * par4 ... pol_deg  - intrinsic polarisation degree of primary radiation
+ * par5 ... chi - intrinsic polarisation angle (in degrees, -90 < chi < 90)
  *		       of primary radiation, the orientation is degenarate by 
  *		       180 degrees
- * par5 ... pos_ang - orientation of the system (-90 < pos_ang < 90), 
+ * par6 ... pos_ang - orientation of the system (-90 < pos_ang < 90), 
  *                    the position angle (in degrees) of the system 
  *                    rotation axis with direction up,
  *                    the orientation is degenarate by 180 degrees
- * par6 ... zshift  - overall Doppler shift
- * par7 ... Stokes  - what should be stored in photar() array, i.e. as output
+ * par7 ... zshift  - overall Doppler shift
+ * par8 ... Stokes  - what should be stored in photar() array, i.e. as output
  *                    = -1 - the output is defined according to the XFLT0001 
  *                           keyword of the SPECTRUM extension of the data file,
  *                           where "Stokes:0" means photon number density flux,
@@ -58,7 +64,7 @@
 #define REFSPECTRA3 "stokes-neutral-iso-45DEG-disc.fits\0" // DIAGONALLY POLARISED
 
 #define PI   3.14159265358979
-#define NPAR 3
+#define NPAR 4
 
 extern int    xs_write(char* wrtstr, int idest);
 extern float  DGFILT(int ifl, const char* key);
@@ -77,17 +83,17 @@ double pol_deg, chi, pos_ang;
 const char*   xfltname = "Stokes";
 float  xfltvalue;
 float  Smatrix[9][ne];
-float  fl_param[NPAR]={(float) param[0], (float) param[1],(float) param[5]};
+float  fl_param[NPAR]={(float) param[0], (float) param[1], (float) param[2],(float) param[6]};
 const char*  tabtyp="add";
 float  fl_ear[ne+1], fl_photer[ne];
 double far[ne], qar[ne], uar[ne], var[ne], pd[ne], pa[ne], pa2[ne], 
        qar_final[ne], uar_final[ne];
 double pamin, pamax, pa2min, pa2max;
 
-pol_deg = param[2];
-chi = param[3]/180.*PI;
-pos_ang = param[4]/180.*PI;
-stokes = (int) param[6];
+pol_deg = param[3];
+chi = param[4]/180.*PI;
+pos_ang = param[5]/180.*PI;
+stokes = (int) param[7];
 if(stokes == -1){
   xfltvalue = DGFILT(ifl, xfltname);
   if (xfltvalue == 0. || xfltvalue == 1. || xfltvalue == 2.){
@@ -95,7 +101,7 @@ if(stokes == -1){
   }
   else {
     xs_write("stokes: no or wrong information on data type (counts, q, u)", 5);
-    xs_write("stokes: stokes = par7 = 0 (i.e. counts) will be used", 5);
+    xs_write("stokes: stokes = par8 = 0 (i.e. counts) will be used", 5);
     stokes=0;
   }
 }
@@ -118,14 +124,14 @@ if(stokes){//we use polarised tables
     for(j=0; j<=2; j++) Smatrix[j+3][ie] -= Smatrix[j][ie];
     for(j=0; j<=2; j++) Smatrix[j+6][ie] -= Smatrix[j][ie];
     far[ie] = Smatrix[0][ie] +
-                        pol_deg * ( -Smatrix[3][ie] * cos(2.*(chi+pos_ang)) +
-                                    Smatrix[6][ie] * sin(2.*(chi+pos_ang)) );
+                        pol_deg * ( -Smatrix[3][ie] * cos(2.*(chi)) +
+                                    Smatrix[6][ie] * sin(2.*(chi)) );
     qar[ie] = Smatrix[1][ie] +
-                        pol_deg * ( -Smatrix[4][ie] * cos(2.*(chi+pos_ang))+
-                                    Smatrix[7][ie] * sin(2.*(chi+pos_ang)) );
+                        pol_deg * ( -Smatrix[4][ie] * cos(2.*(chi))+
+                                    Smatrix[7][ie] * sin(2.*(chi)) );
     uar[ie] = Smatrix[2][ie] +
-                        pol_deg * ( -Smatrix[5][ie] * cos(2.*(chi+pos_ang))+
-                                    Smatrix[8][ie] * sin(2.*(chi+pos_ang)) );
+                        pol_deg * ( -Smatrix[5][ie] * cos(2.*(chi))+
+                                    Smatrix[8][ie] * sin(2.*(chi)) );
     var[ie] = 0.;   
   }
 }else{//we just use unpolarised counts
@@ -141,12 +147,12 @@ if(stokes){//we use polarised tables
 if (!stokes) for (ie = 0; ie < ne; ie++) photar[ie] = far[ie];
 else {
 // let's change the orientation of the system 
-  //if(pos_ang != 0.)
-  // for( ie=0; ie<ne; ie++ ){
-  //    qar_final[ie] = qar[ie] * cos(2*pos_ang) - uar[ie] * sin(2*pos_ang);
-  //    uar_final[ie] = uar[ie] * cos(2*pos_ang) + qar[ie] * sin(2*pos_ang);
-  //  }
-  // else
+  if(pos_ang != 0.)
+   for( ie=0; ie<ne; ie++ ){
+      qar_final[ie] = qar[ie] * cos(2*pos_ang) - uar[ie] * sin(2*pos_ang);
+      uar_final[ie] = uar[ie] * cos(2*pos_ang) + qar[ie] * sin(2*pos_ang);
+    }
+   else
     for( ie=0; ie<ne; ie++ ){
       qar_final[ie] = qar[ie];
       uar_final[ie] = uar[ie];

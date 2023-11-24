@@ -11,6 +11,8 @@ Table of contents
 Model description
 =================
 
+!! CAUTION, THE MODEL IS STILL IN A TESTING MODE !!
+
 This model computes the emission and its polarisation properties from
 an X-ray source of power-law emission of arbitrary incident polarisation 
 that is reprocessed in axially symmetric structures. The reprocessing
@@ -18,19 +20,20 @@ is precomputed in a form of FITS fits files that are required for
 usage. These files were computed for three different states
 of incident polarisation and this model interpolates for any primary
 polarisation state. In addition the model possesses other properties of the
-reprocessing tables that were precomputed for a particular problem.
+reprocessing tables that were precomputed for nearly neutral disc reflection.
 
 In this case of xsstokes_disc, it is reflection from distant regions
 of a geometrically thin optically thick accretion disc residing in the
 equatorial plane around a central black hole. The source of emission
 is a hot X-ray corona illuminating isotropically between
-0 <= cos_incl_incident <= 0.3 only, to represent distant disc reflection.
+0 <= cos_incl_incident <= M, to represent distant disc reflection.
 The local disc reflection was computed using the STOKES code and more
 details are given in Podgorný J. et al. (2022). More details on the
 integration and implementation for arbitrary polarisation state in XSPEC
 are given in Podgorný J. et al. (in prep.). Apart from the incident
 polarisation degree and angle, the model then also depends on
 observer's inclination angle, the primary power-law index Gamma,
+the integration upper limit M (i.e. representing the corona size),
 the position angle on the sky, and the overall Dopler shift.
 No relativistic effects inside the system are taken into account.
 All components are static.
@@ -46,28 +49,31 @@ References
 Podgorný J, Dovčiak M, Marin F (2023)  
 _Simple numerical X-ray polarization models of reflecting axially symmetric structures around accreting compact objects_  
 [MNRAS, submitted]()
-[[arXiv:]()]
-
-Podgorný J, Dovčiak M, Marin F, Goosmann RW and Różańska A (2022)
-Spectral and polarization properties of reflected X-ray emission from black hole accretion discs
-[MNRAS, 510, pp.4723-4735](https://doi.org/10.1093/mnras/stab3714)
-[[arXiv:2201.07494](https://arxiv.org/abs/2201.07494)]
+[[arXiv:2310.15647](https://arxiv.org/abs/2310.15647)]
 
 Model parameters
 ================
 
-* **par1 ... PhoIndex** 
+* **par1 ... Size**
+  - the upper limit M in cos_incl_incident integration,
+  - representing the corona size
+* **par2 ... PhoIndex** 
   - photon index of the primary power-law X-ray flux
-* **par2 ... cos_incl** 
+* **par3 ... cos_incl** 
   - cosine of the observer inclination (1.-pole, 0.-disc)
-* **par3 ... poldeg**  
+* **par4 ... poldeg**  
   - intrinsic polarisation degree of primary radiation between 0. and 1.
-* **par4 ... chi**  
+* **par5 ... chi**  
   - intrinsic polarisation angle (in degrees, -90 < chi < 90) of primary radiation
   - the orientation is degenarate by 180 degrees
-* **par5 ... zshift**
+* **par6 ... pos_ang**  
+  - orientation of the system (-90 < pos_ang < 90), 
+  - the position angle (in degrees) of the system 
+  - rotation axis with direction up,
+  - the orientation is degenarate by 180 degrees
+* **par7 ... zshift**
   - overall Doppler shift
-* **par6 ... Stokes**
+* **par8 ... Stokes**
   - defines the output of the model:
     - -1: the output is defined according to the XFLT0001 keyword of the 
           SPECTRUM extension of the data file, where "Stokes:0" means photon 
