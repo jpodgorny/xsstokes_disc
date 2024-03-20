@@ -26,7 +26,7 @@ In this case of xsstokes_disc, it is reflection from distant regions
 of a geometrically thin optically thick accretion disc residing in the
 equatorial plane around a central black hole. The source of emission
 is a hot X-ray corona illuminating isotropically between
-0 <= cos_incl_incident <= M, to represent distant disc reflection.
+0 <= cos_incl_incident <= M_i, to represent distant disc reflection.
 The local disc reflection was computed using the STOKES code and more
 details are given in Podgorný J. et al. (2022). More details on the
 integration and implementation for arbitrary polarisation state in XSPEC
@@ -55,7 +55,7 @@ Model parameters
 ================
 
 * **par1 ... Size**
-  - the upper limit M in cos_incl_incident integration,
+  - the upper limit M_i in cos_incl_incident integration,
   - representing the corona size
 * **par2 ... PhoIndex** 
   - photon index of the primary power-law X-ray flux
@@ -125,7 +125,7 @@ Installation and usage in XSPEC
    the source files and FITS tables are in the directory 
    '/path/to/xsstokes_disc-master'):
 
-   `initpackage stokesni lmodel-stokesni.dat /path/to/xsstokes_disc-master`
+   `initpackage stokesdisc lmodel-stokesni.dat /path/to/xsstokes_disc-master`
 
    **Note**:
    Your XSPEC installation must have been originally installed from the source 
@@ -141,7 +141,7 @@ Installation and usage in XSPEC
 
 6. Then the **xsstokes_disc model may be used** in the usual way, e.g.:
 
-   `mo stokes`
+   `mo stokesdisc`
 
    **Note**:
    In case of segmentation fault, one may need to increase the stack size before 

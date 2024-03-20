@@ -58,6 +58,44 @@
 
 /*******************************************************************************
 *******************************************************************************/
+#ifdef OUTSIDE_XSPEC
+
+#define IFL    1
+#define NPARAM 4
+#define NE     300
+#define E_MIN  0.1
+#define E_MAX  100.
+
+int main() {
+
+void stokesdisc(const double *ear, int ne, const double *param, int ifl, 
+               double *photar, double *photer, const char* init);
+
+double ear[NE+1], photar[NE], photer[NE], param[NPARAM];
+char   initstr[0] = "";
+int    ie;
+
+param[ 0] = 0.3;        // Size
+param[ 1] = 2.0;        // PhoIndex
+param[ 2] = 0.775;      // cos_incl
+param[ 3] = 0.;         // poldeg
+param[ 4] = 0.;         // chi
+param[ 5] = 0.;         // pos_ang
+param[ 6] = 0.;         // zshift
+param[ 7] = 1.;         // Stokes
+
+for(ie = 0; ie <= NE; ie++) {
+//  ear[ie] = E_MIN + ie * (E_MAX-E_MIN) / NE;
+  ear[ie] = E_MIN * pow(E_MAX / E_MIN, ((double) ie) / NE);
+}
+
+stokes(ear, NE, param, IFL, photar, photer, initstr);
+return(0);
+}
+
+#endif
+/*******************************************************************************
+*******************************************************************************/
 
 #define REFSPECTRA1 "stokes-neutral-iso-UNPOL-disc.fits\0" // UNPOLARISED
 #define REFSPECTRA2 "stokes-neutral-iso-HRPOL-disc.fits\0" // HORIZONTALLY POLARISED
@@ -73,11 +111,20 @@ extern void   tabintxflt(float* ear, int ne, float* param, const int npar,
                          const float *xfltvalue, const int nxflt,
                          const char* tabtyp, float* photar, float* photer);
 
-void stokes(const double *ear, int ne, const double *param, int ifl, 
+void stokesdisc(const double *ear, int ne, const double *param, int ifl, 
             double *photar, double *photer, const char* init) {
 
 FILE   *fw;
-char   refspectra[3][35] = {{REFSPECTRA1},{REFSPECTRA2},{REFSPECTRA3}};
+static char   xsdir[255]="";
+static char   pname[128]="XSDIR";
+static char   refspectra[3][35];
+
+// - if set try XSDIR directory, otherwise look in the working directory
+//   or in the xspec directory where tables are usually stored...
+if (strlen(xsdir) == 0) refspectra = {{REFSPECTRA1},{REFSPECTRA2},{REFSPECTRA3}};
+else if (xsdir[strlen(xsdir) - 1] == '/') refspectra = {{"%s%s", xsdir, REFSPECTRA1},{"%s%s", xsdir, REFSPECTRA2},{"%s%s", xsdir, REFSPECTRA3}};
+else refspectra = {{"%s/%s", xsdir, REFSPECTRA1},{"%s/%s", xsdir, REFSPECTRA2},{"%s/%s", xsdir, REFSPECTRA3}};
+
 int    i, j, ie, stokes;
 double pol_deg, chi, pos_ang;
 const char*   xfltname = "Stokes";
@@ -142,6 +189,22 @@ if(stokes){//we use polarised tables
     far[ie] = Smatrix[0][ie];
   }
 }
+
+/******************************************************************************/
+#ifdef OUTSIDE_XSPEC
+// let's write the input parameters to a file
+fw = fopen("parameters.txt", "w");
+fprintf(fw, "Size        %12.6f\n", param[0]);
+fprintf(fw, "PhoIndex        %12.6f\n", param[1]);
+fprintf(fw, "cos_incl     %12.6f\n", param[2]);
+fprintf(fw, "poldeg        %12.6f\n", param[3]);
+fprintf(fw, "chi         %12.6f\n", param[4]);
+fprintf(fw, "pos_ang        %12.6f\n", param[5]);
+fprintf(fw, "zshift      %12.6f\n", param[6]);
+fprintf(fw, "Stokes      %12d\n", (int) param[7]);
+fclose(fw);
+#endif
+/******************************************************************************/
 
 // interface with XSPEC
 if (!stokes) for (ie = 0; ie < ne; ie++) photar[ie] = far[ie];
