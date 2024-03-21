@@ -94,6 +94,17 @@ Model parameters
     -  9: array of Stokes parameter U devided by I
     - 10: array of Stokes parameter V devided by I
 
+
+Further output of the model
+===========================
+
+When the fit is finished the XSPEC command xset can be used to see the following 
+additional information of the model:
+ 
+* **inc_degrees**
+  - inclination in degrees measured from the disc normal, i.e. "acos(cos_incl)/PI*180."
+
+
 Required files
 ==============
 
@@ -133,11 +144,12 @@ Installation and usage in XSPEC
    was originally installed from the pre-compiled binary distribution.
 
 5. **Load the xsstokes_disc model** into XSPEC:
-
+   
    To use the xsstokes_disc model inside XSPEC, first the model package needs to be 
-   loaded and directory containing the xsstokes_disc set:
+   loaded and you can also setup a directory containing the xsstokes_disc set:
 
    `lmod stokesdisc /path/to/xsstokes_disc-master`  
+   `xset XSDIR /path/to/xsstokes_disc-master`
 
 6. Then the **xsstokes_disc model may be used** in the usual way, e.g.:
 

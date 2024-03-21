@@ -13,7 +13,7 @@
  * This subroutine computes the emission from a neutral slab that is illuminated 
  * under high inclination angles by a primary power-law
  *
- * par1 ... Size - the upper limit M in cos_incl_incident integration,
+ * par1 ... Size - the upper limit M_i in cos_incl_incident integration,
  *			representing the corona size
  * par2 ... PhoIndex - power-law photon index of the primary flux
  * par3 ... cos_incl - cosine of the observer inclination (1.-pole, 0.-disc)
@@ -62,8 +62,8 @@
 
 #define IFL    1
 #define NPARAM 4
-#define NE     300
-#define E_MIN  0.1
+#define NE     200
+#define E_MIN  1.
 #define E_MAX  100.
 
 int main() {
@@ -116,14 +116,28 @@ void stokesdisc(const double *ear, int ne, const double *param, int ifl,
 
 FILE   *fw;
 static char   xsdir[255]="";
-static char   pname[128]="XSDIR";
-static char   refspectra[3][35];
+static char   pname[128]="XSDIR", pinc_degrees[128] = "inc_degrees";
+static char refspectra[3][255];
 
 // - if set try XSDIR directory, otherwise look in the working directory
 //   or in the xspec directory where tables are usually stored...
-if (strlen(xsdir) == 0) refspectra = {{REFSPECTRA1},{REFSPECTRA2},{REFSPECTRA3}};
-else if (xsdir[strlen(xsdir) - 1] == '/') refspectra = {{"%s%s", xsdir, REFSPECTRA1},{"%s%s", xsdir, REFSPECTRA2},{"%s%s", xsdir, REFSPECTRA3}};
-else refspectra = {{"%s/%s", xsdir, REFSPECTRA1},{"%s/%s", xsdir, REFSPECTRA2},{"%s/%s", xsdir, REFSPECTRA3}};
+// Initialize refspectra elements and visibility file path
+if (strlen(xsdir) == 0) {
+    strcpy(refspectra[0], REFSPECTRA1);
+    strcpy(refspectra[1], REFSPECTRA2);
+    strcpy(refspectra[2], REFSPECTRA3);
+} else {
+    if (xsdir[strlen(xsdir) - 1] == '/') {
+        sprintf(refspectra[0], "%s%s", xsdir, REFSPECTRA1);
+        sprintf(refspectra[1], "%s%s", xsdir, REFSPECTRA2);
+        sprintf(refspectra[2], "%s%s", xsdir, REFSPECTRA3);
+    } else {
+        sprintf(refspectra[0], "%s/%s", xsdir, REFSPECTRA1);
+        sprintf(refspectra[1], "%s/%s", xsdir, REFSPECTRA2);
+        sprintf(refspectra[2], "%s/%s", xsdir, REFSPECTRA3);
+    }
+}
+
 
 int    i, j, ie, stokes;
 double pol_deg, chi, pos_ang;
@@ -135,12 +149,14 @@ const char*  tabtyp="add";
 float  fl_ear[ne+1], fl_photer[ne];
 double far[ne], qar[ne], uar[ne], var[ne], pd[ne], pa[ne], pa2[ne], 
        qar_final[ne], uar_final[ne];
-double pamin, pamax, pa2min, pa2max;
+double pamin, pamax, pa2min, pa2max, inc_tot;
+char inc_degrees[32];
 
 pol_deg = param[3];
 chi = param[4]/180.*PI;
 pos_ang = param[5]/180.*PI;
 stokes = (int) param[7];
+inc_tot = acos((float) param[2]) / PI * 180.0;
 if(stokes == -1){
   xfltvalue = DGFILT(ifl, xfltname);
   if (xfltvalue == 0. || xfltvalue == 1. || xfltvalue == 2.){
@@ -190,6 +206,9 @@ if(stokes){//we use polarised tables
   }
 }
 
+sprintf(inc_degrees, "%12.6f", inc_tot);
+FPMSTR(pinc_degrees, inc_degrees);
+
 /******************************************************************************/
 #ifdef OUTSIDE_XSPEC
 // let's write the input parameters to a file
@@ -202,6 +221,7 @@ fprintf(fw, "chi         %12.6f\n", param[4]);
 fprintf(fw, "pos_ang        %12.6f\n", param[5]);
 fprintf(fw, "zshift      %12.6f\n", param[6]);
 fprintf(fw, "Stokes      %12d\n", (int) param[7]);
+fprintf(fw, "inc_degrees      %12.6f\n", x0);
 fclose(fw);
 #endif
 /******************************************************************************/
