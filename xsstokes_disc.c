@@ -4,11 +4,6 @@
  *	    tables computed with STOKES code (Podgorny et al. 2022), integrated between
  *	    0 <= cos_incl_incident <= M only to represent distant disc reflection
  * 
- * -----------------------------------------------------------------------------
- *
- * !! CAUTION, THE MODEL IS STILL IN A TESTING MODE !!
- *
- * -----------------------------------------------------------------------------
  *
  * This subroutine computes the emission from a neutral slab that is illuminated 
  * under high inclination angles by a primary power-law
@@ -54,7 +49,9 @@
  ******************************************************************************/
 
 #include <math.h>
+#include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /*******************************************************************************
 *******************************************************************************/
@@ -68,8 +65,9 @@
 
 int main() {
 
-void stokesdisc(const double *ear, int ne, const double *param, int ifl, 
+int stokesdisc(const double *ear, int ne, const double *param, int ifl,
                double *photar, double *photer, const char* init);
+
 
 double ear[NE+1], photar[NE], photer[NE], param[NPARAM];
 char   initstr[0] = "";
@@ -89,7 +87,7 @@ for(ie = 0; ie <= NE; ie++) {
   ear[ie] = E_MIN * pow(E_MAX / E_MIN, ((double) ie) / NE);
 }
 
-stokes(ear, NE, param, IFL, photar, photer, initstr);
+stokesdisc(ear, NE, param, IFL, photar, photer, initstr);
 return(0);
 }
 
@@ -150,6 +148,7 @@ float  fl_ear[ne+1], fl_photer[ne];
 double far[ne], qar[ne], uar[ne], var[ne], pd[ne], pa[ne], pa2[ne], 
        qar_final[ne], uar_final[ne];
 double pamin, pamax, pa2min, pa2max, inc_tot;
+
 char inc_degrees[32];
 
 pol_deg = param[3];
@@ -291,5 +290,5 @@ else {
   fclose(fw);
 }
 
-return;
+return 0;
 }

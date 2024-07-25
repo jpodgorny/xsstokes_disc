@@ -11,8 +11,6 @@ Table of contents
 Model description
 =================
 
-!! CAUTION, THE MODEL IS STILL IN A TESTING MODE !!
-
 This model computes the emission and its polarisation properties from
 an X-ray source of power-law emission of arbitrary incident polarisation 
 that is reprocessed in axially symmetric structures. The reprocessing
@@ -30,7 +28,7 @@ is a hot X-ray corona illuminating isotropically between
 The local disc reflection was computed using the STOKES code and more
 details are given in Podgorný J. et al. (2022). More details on the
 integration and implementation for arbitrary polarisation state in XSPEC
-are given in Podgorný J. et al. (in prep.). Apart from the incident
+are given in Podgorný J. et al. (2024). Apart from the incident
 polarisation degree and angle, the model then also depends on
 observer's inclination angle, the primary power-law index Gamma,
 the integration upper limit M (i.e. representing the corona size),
@@ -46,9 +44,14 @@ For any issues regarding the use of xsstokes_disc, please, contact J. Podgorný 
 References
 ==========
 
-Podgorný J, Dovčiak M, Marin F (2023)  
+Podgorný J, Dovčiak M, Marin F, Goosmann RW and Różańska A (2022)
+_Spectral and polarization properties of reflected X-ray emission from black hole accretion discs_
+[MNRAS, 510, pp.4723-4735](https://doi.org/10.1093/mnras/stab3714)
+[[arXiv:2201.07494](https://arxiv.org/abs/2201.07494)]
+
+Podgorný J, Dovčiak M, Marin F (2024)
 _Simple numerical X-ray polarization models of reflecting axially symmetric structures around accreting compact objects_  
-[MNRAS, submitted]()
+[MNRAS, 530, pp.2608-2626](https://doi.org/10.1093/mnras/stae1009)
 [[arXiv:2310.15647](https://arxiv.org/abs/2310.15647)]
 
 Model parameters
@@ -112,7 +115,7 @@ Required files
   - xsstokes_disc.c
   - lmodel-stokesni.dat  
 * **reprocessing tables**
-  (for reprocessing of photons in distant discs, more details in Podgorný J. et al. (in prep.))
+  (for reprocessing of photons in distant discs, more details in Podgorný J. et al. (2024))
   - [23576508.zip](https://doi.org/10.6084/m9.figshare.23576508)  
 
 
@@ -136,7 +139,7 @@ Installation and usage in XSPEC
    the source files and FITS tables are in the directory 
    '/path/to/xsstokes_disc-master'):
 
-   `initpackage stokesdisc lmodel-stokesni.dat /path/to/xsstokes_disc-master`
+   `initpackage stokesnidisc lmodel-stokesni.dat /path/to/xsstokes_disc-master`
 
    **Note**:
    Your XSPEC installation must have been originally installed from the source 
@@ -153,7 +156,7 @@ Installation and usage in XSPEC
 
 6. Then the **xsstokes_disc model may be used** in the usual way, e.g.:
 
-   `mo stokesdisc`
+   `mo stokesnidisc`
 
    **Note**:
    In case of segmentation fault, one may need to increase the stack size before 
