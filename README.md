@@ -151,12 +151,12 @@ Installation and usage in XSPEC
    To use the xsstokes_disc model inside XSPEC, first the model package needs to be 
    loaded and you can also setup a directory containing the xsstokes_disc set:
 
-   `lmod stokesdisc /path/to/xsstokes_disc-master`  
+   `lmod stokesnidisc /path/to/xsstokes_disc-master`
    `xset XSDIR /path/to/xsstokes_disc-master`
 
 6. Then the **xsstokes_disc model may be used** in the usual way, e.g.:
 
-   `mo stokesnidisc`
+   `mo stokesdisc`
 
    **Note**:
    In case of segmentation fault, one may need to increase the stack size before 
