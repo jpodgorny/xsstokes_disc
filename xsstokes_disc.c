@@ -104,20 +104,21 @@ return(0);
 
 extern int    xs_write(char* wrtstr, int idest);
 extern float  DGFILT(int ifl, const char* key);
+extern void   FPMSTR(const char* value1, const char* value2);
 extern char*  FGMSTR(char* dname);
 extern void   tabintxflt(float* ear, int ne, float* param, const int npar, 
                          const char* filenm, const char **xfltname, 
                          const float *xfltvalue, const int nxflt,
                          const char* tabtyp, float* photar, float* photer);
 
-void stokesnidisc(const double *ear, int ne, const double *param, int ifl,
+int stokesnidisc(const double *ear, int ne, const double *param, int ifl,
             double *photar, double *photer, const char* init) {
 
 FILE   *fw;
 static char   xsdir[255]="";
 static char   pname[128]="XSDIR", pinc_degrees[128] = "inc_degrees";
 static char refspectra[3][255];
-static int    first = 1;
+//static int    first = 1;
 int status = 0;
 
 // - if set try XSDIR directory, otherwise look in the working directory
@@ -176,7 +177,7 @@ if(stokes == -1){
 //Note that we do not use errors here
 for(ie = 0; ie <= ne; ie++) fl_ear[ie] = (float) ear[ie];
 if(stokes){//we use polarised tables  
-  if (first) {
+//  if (first) {
   // The status parameter must always be initialized.
   status = 0;
 
@@ -187,8 +188,8 @@ if(stokes){//we use polarised tables
                  &xfltvalue, 1, tabtyp, Smatrix[i*3+j], fl_photer);  
       }
 
-  first = 0;
-  }
+//  first = 0;
+//  }
 
   //Let's perform the transformation to initial primary polarisation degree and angle
   for(ie = 0; ie < ne; ie++) {
@@ -207,7 +208,7 @@ if(stokes){//we use polarised tables
     var[ie] = 0.;   
   }
 }else{//we just use unpolarised counts
-  if (first) {
+//  if (first) {
 // The status parameter must always be initialized.
   status = 0;
 
@@ -215,8 +216,8 @@ if(stokes){//we use polarised tables
   tabintxflt(fl_ear, ne, fl_param, NPAR, refspectra[0], &xfltname, &xfltvalue, 
              1, tabtyp, Smatrix[0], fl_photer);  
 
-  first = 0;
-  }
+//  first = 0;
+//  }
 
   for(ie = 0; ie < ne; ie++){
     far[ie] = Smatrix[0][ie];
