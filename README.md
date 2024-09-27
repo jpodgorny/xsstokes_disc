@@ -213,6 +213,7 @@ One can see the model predicted polarisation properties in the following way:
    `data 1 fake_null_i_300ch.pha`  
    `data 2 fake_null_q_300ch.pha`  
    `data 3 fake_null_u_300ch.pha`  
+   `setplot energy`  
 
    the fake unit responses will be automatically loaded. For convenience, change also the energy range of the data
 
