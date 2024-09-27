@@ -149,7 +149,7 @@ Installation and usage in XSPEC
 5. **Load the xsstokes_disc model** into XSPEC:
    
    To use the xsstokes_disc model inside XSPEC, first the model package needs to be 
-   loaded and you can also setup a directory containing the xsstokes_disc set:
+   loaded and also setup a directory containing the xsstokes_disc set:
 
    `lmod stokesdisc /path/to/xsstokes_disc-master`
 
