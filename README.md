@@ -139,7 +139,7 @@ Installation and usage in XSPEC
    the source files and FITS tables are in the directory 
    '/path/to/xsstokes_disc-master'):
 
-   `initpackage stokesnidisc lmodel-stokesni.dat /path/to/xsstokes_disc-master`
+   `initpackage stokesdisc lmodel-stokesdisc.dat /path/to/xsstokes_disc-master`
 
    **Note**:
    Your XSPEC installation must have been originally installed from the source 
@@ -151,7 +151,7 @@ Installation and usage in XSPEC
    To use the xsstokes_disc model inside XSPEC, first the model package needs to be 
    loaded and you can also setup a directory containing the xsstokes_disc set:
 
-   `lmod stokesnidisc /path/to/xsstokes_disc-master`
+   `lmod stokesdisc /path/to/xsstokes_disc-master`
 
    `xset XSDIR /path/to/xsstokes_disc-master`
 

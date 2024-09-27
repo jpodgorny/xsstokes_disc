@@ -65,7 +65,7 @@
 
 int main() {
 
-int stokesdisc(const double *ear, int ne, const double *param, int ifl,
+int stokesnidisc(const double *ear, int ne, const double *param, int ifl,
                double *photar, double *photer, const char* init);
 
 
@@ -87,7 +87,7 @@ for(ie = 0; ie <= NE; ie++) {
   ear[ie] = E_MIN * pow(E_MAX / E_MIN, ((double) ie) / NE);
 }
 
-stokesdisc(ear, NE, param, IFL, photar, photer, initstr);
+stokesnidisc(ear, NE, param, IFL, photar, photer, initstr);
 return(0);
 }
 
@@ -110,7 +110,7 @@ extern void   tabintxflt(float* ear, int ne, float* param, const int npar,
                          const float *xfltvalue, const int nxflt,
                          const char* tabtyp, float* photar, float* photer);
 
-void stokesdisc(const double *ear, int ne, const double *param, int ifl, 
+void stokesnidisc(const double *ear, int ne, const double *param, int ifl,
             double *photar, double *photer, const char* init) {
 
 FILE   *fw;
