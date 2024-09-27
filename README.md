@@ -210,9 +210,9 @@ One can see the model predicted polarisation properties in the following way:
 
 3. **Load the fake null data into XSPEC**:
 
-   `data 1 fake_null_i_300ch.pha`
-   `data 2 fake_null_q_300ch.pha`
-   `data 3 fake_null_u_300ch.pha`
+   `data 1 fake_null_i_300ch.pha`  
+   `data 2 fake_null_q_300ch.pha`  
+   `data 3 fake_null_u_300ch.pha`  
 
    the fake unit responses will be automatically loaded. For convenience, change also the energy range of the data
 
@@ -228,8 +228,8 @@ One can see the model predicted polarisation properties in the following way:
 
 5. **View the polarisation degree and angle** in XSPEC:
 
-   `plot polfrac`
-   `plot polangle`
+   `plot polfrac`  
+   `plot polangle`  
 
    Note that the model has to be loaded into XSPEC first, as described in Section
    [Installation and usage in XSPEC](#installation-and-usage-in-xspec).
