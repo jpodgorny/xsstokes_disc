@@ -168,3 +168,68 @@ Installation and usage in XSPEC
    or 
 
    `ulimit -s 65532`
+
+
+Viewing the model in XSPEC
+==========================
+
+One usually needs to have polarisation data sets loaded for all three stokes
+parameters to view the polarisation properties predicted by a model inside XSPEC.
+The model is then shown in the energy range covered by, and with the energy binning
+of, these data sets. To overcome these disadvantages, the xsstokes_disc model provides
+a parameter (par8) that defines the output of the model, e.g. to show the model
+prediction for the polarisation degree, one needs to set par8 to 5, see Section
+[Model parameters](#model-parameters). In this case, dummy response may be used
+without any data loaded, e.g. `'dummyrsp 1. 100. 200 log'`. Then the model may be
+viewed (after it has been loaded in XSPEC) in a usual way using `'plot model'`. Note
+that when showing polarisation degree, angle and normalised Stokes parameters, i.e.
+when par8 is set to 5-10, the normalisation of the model needs to be set to unity!
+
+To use the original way of showing results of polarisation model inside XSPEC, we
+also provide a fake null data sets for all three Stokes parameters, i, q and u,
+binned in 300 channels, together with corresponding unit response matrices, rmf, arf
+and mrf, defined in 0.1 to 100 keV in 300 channels, see
+[fake_null_iqu_300ch.tar.gz](https://owncloud.asu.cas.cz/index.php/s/Flk6cwYLISmw0D5).
+One can see the model predicted polarisation properties in the following way:
+
+1. **Download the package containing the fake null data and unit repsonses** -
+   [fake_null_iqu_300ch.tar.gz](https://owncloud.asu.cas.cz/index.php/s/Flk6cwYLISmw0D5)
+
+2. **Uncompress the package**, e.g. by the command:
+
+   `tar -xzf fake_null_iqu_300ch.tar.gz`
+
+   This will uncompress the following files:
+
+   - `fake_null_i_300ch.pha`
+   - `fake_null_q_300ch.pha`
+   - `fake_null_u_300ch.pha`
+   - `fake_unit_response_0.1-100keV_300ch.rmf`
+   - `fake_unit_response_0.1-100keV_300ch.arf`
+   - `fake_unit_response_0.1-100keV_300ch.mrf`
+
+3. **Load the fake null data into XSPEC**:
+
+   `data 1 fake_null_i_300ch.pha`
+   `data 2 fake_null_q_300ch.pha`
+   `data 3 fake_null_u_300ch.pha`
+
+   the fake unit responses will be automatically loaded. For convenience, change also the energy range of the data
+
+   `ignore *:**-1.`
+
+4. **Set xsstokes_disc par8 to -1**
+
+   To be able to use the traditional way of using the polarisation data with the model in XSPEC, one needs to set the xsstokes_disc parameter par8 to -1:
+
+   `newpar 8 -1 -1 -1 -1 10 10`
+
+   Here, we have also redefined the boundaries of this parameter in case -1 value is not allowed by the default settings.
+
+5. **View the polarisation degree and angle** in XSPEC:
+
+   `plot polfrac`
+   `plot polangle`
+
+   Note that the model has to be loaded into XSPEC first, as described in Section
+   [Installation and usage in XSPEC](#installation-and-usage-in-xspec).
